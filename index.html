@@ -387,6 +387,9 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
   <!-- ═══ ADMIN: JORNADAS ═══ -->
   <div class="view" id="view-adm-jornadas">
     <div class="scroll" id="admJornadasList"></div>
+    <div class="bottom-bar">
+      <button class="btn btn-gold" onclick="openAddJorn()">＋ Añadir jornada manual</button>
+    </div>
   </div>
 
   <!-- ═══ ADMIN: VACATIONS ═══ -->
@@ -530,6 +533,50 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
     <div class="msf">
       <button class="btn-secondary" onclick="closeM('mFinde')" style="border:1.5px solid var(--co)!important;background:transparent;color:var(--ts);">Cancelar</button>
       <button class="btn-primary" onclick="saveFinde()" style="background:var(--v);color:var(--cr);">💾 Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: CREAR JORNADA MANUAL (ADMIN) ═══ -->
+<div class="mo" id="mAddJorn">
+  <div class="ms">
+    <div class="msh">
+      <h3>＋ Crear jornada manual</h3>
+      <button class="msc" onclick="closeM('mAddJorn')">✕</button>
+    </div>
+    <div class="msb">
+      <div style="background:rgba(201,168,76,0.1);border-left:3px solid var(--do);padding:9px 12px;font-size:11.5px;color:var(--ts);margin-bottom:13px;border-radius:0 6px 6px 0;">
+        💡 Útil cuando alguien se olvidó de fichar todo el día. Quedará marcada como añadida manualmente.
+      </div>
+      <div class="fg">
+        <span class="fl">Empleado</span>
+        <select class="fi" id="addJornUser"></select>
+      </div>
+      <div class="fg">
+        <span class="fl">Fecha</span>
+        <input type="date" class="fi" id="addJornDate">
+      </div>
+      <div class="fi-row">
+        <div class="fg">
+          <span class="fl">Entrada</span>
+          <input type="time" class="fi fi-time" id="addJornIn">
+        </div>
+        <div class="fg">
+          <span class="fl">Salida</span>
+          <input type="time" class="fi fi-time" id="addJornOut">
+        </div>
+      </div>
+      <div class="fg">
+        <span class="fl">Notas (opcional)</span>
+        <textarea class="fi" id="addJornNote" placeholder="ej: Olvidó fichar — añadido por admin"></textarea>
+      </div>
+      <div style="background:var(--cr);padding:10px;border-radius:8px;font-size:12px;color:var(--ts);">
+        Total calculado: <strong id="addJornTotal" style="color:var(--v);font-family:DM Mono,monospace;">—</strong>
+      </div>
+    </div>
+    <div class="msf">
+      <button class="btn-secondary" onclick="closeM('mAddJorn')" style="border:1.5px solid var(--co)!important;background:transparent;color:var(--ts);">Cancelar</button>
+      <button class="btn-primary" onclick="saveAddJorn()" style="background:var(--v);color:var(--cr);">💾 Crear jornada</button>
     </div>
   </div>
 </div>
@@ -710,15 +757,8 @@ async function saveData(k, arr){
 }
 
 // Load team config (still local, since it's just UI roster + pins)
-function loadTeam(){
-  try{
-    var saved = JSON.parse(localStorage.getItem('bf_rrhh_team')||'null');
-    if(saved) return saved;
-  }catch{}
-  localStorage.setItem('bf_rrhh_team', JSON.stringify(TEAM));
-  return TEAM;
-}
-TEAM = loadTeam();
+// Borrar cualquier caché vieja del equipo (causaba que apareciera "Javier R." aunque cambiara el código)
+try { localStorage.removeItem('bf_rrhh_team'); } catch{}
 
 var _user = null; // current logged-in user
 var _pinBuffer = '';
@@ -1641,6 +1681,72 @@ async function saveAdminEditJorn(){
   if(ok){
     closeM('mEditJorn');
     toast('✅ Jornada editada y validada');
+    refreshAll();
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// ── ADMIN: CREAR JORNADA MANUAL ─────────────────────────────
+// ════════════════════════════════════════════════════════════
+function openAddJorn(){
+  // Poblar selector de empleados
+  var sel = document.getElementById('addJornUser');
+  var employees = TEAM.filter(function(u){return u.role==='employee';});
+  sel.innerHTML = '<option value="">— Selecciona —</option>' +
+    employees.map(function(u){return '<option value="'+u.id+'">'+u.name+'</option>';}).join('');
+  document.getElementById('addJornDate').value = todayStr();
+  document.getElementById('addJornIn').value = '';
+  document.getElementById('addJornOut').value = '';
+  document.getElementById('addJornNote').value = '';
+  document.getElementById('addJornTotal').textContent = '—';
+  document.getElementById('addJornIn').oninput = updateAddJornTotal;
+  document.getElementById('addJornOut').oninput = updateAddJornTotal;
+  document.getElementById('mAddJorn').classList.add('open');
+}
+
+function updateAddJornTotal(){
+  var inT = document.getElementById('addJornIn').value;
+  var outT = document.getElementById('addJornOut').value;
+  if(inT && outT){
+    document.getElementById('addJornTotal').textContent = fmtHours(calcHours(inT, outT));
+  } else {
+    document.getElementById('addJornTotal').textContent = '—';
+  }
+}
+
+async function saveAddJorn(){
+  var userId = document.getElementById('addJornUser').value;
+  var date = document.getElementById('addJornDate').value;
+  var inT = document.getElementById('addJornIn').value;
+  var outT = document.getElementById('addJornOut').value;
+  var note = document.getElementById('addJornNote').value.trim();
+  if(!userId){ toast('⚠ Selecciona el empleado'); return; }
+  if(!date){ toast('⚠ Selecciona la fecha'); return; }
+  if(!inT || !outT){ toast('⚠ Necesitas hora de entrada y salida'); return; }
+  // Comprobar si ya hay una jornada de ese empleado en esa fecha
+  var existing = CACHE.jorn.find(function(j){return j.userId===userId && j.date===date;});
+  if(existing){
+    if(!confirm('⚠ Ya existe una jornada de '+(getUserById(userId)||{name:'?'}).name+' el '+fmtDate(date)+' ('+existing.checkIn+' → '+(existing.checkOut||'en curso')+'). ¿Crear otra de todas formas?')) return;
+  }
+  var newJ = {
+    id: 'J-'+Date.now(),
+    userId: userId,
+    date: date,
+    checkIn: inT,
+    checkOut: outT,
+    hours: calcHours(inT, outT),
+    status: 'approved',
+    note: note ? note : 'Añadida manualmente por admin',
+    createdAt: Date.now(),
+    editedAt: Date.now(),
+    approvedAt: Date.now()
+  };
+  CACHE.jorn.push(newJ);
+  var ok = await pushOne('jorn', newJ);
+  if(ok){
+    closeM('mAddJorn');
+    var u = getUserById(userId)||{name:'?'};
+    toast('✅ Jornada creada para '+u.name+' — '+fmtHours(newJ.hours));
     refreshAll();
   }
 }
