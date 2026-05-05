@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Buscaflor · Equipo</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 70'><g fill='none' stroke='%231a3a2a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M 16 18 C 16 14 19 11 22 11 L 22 9 L 26 12 L 30 9 L 34 12 L 38 9 L 38 11 C 41 11 44 14 44 18 L 44 26 C 44 30 40 33 36 33 L 24 33 C 20 33 16 30 16 26 Z'/><path d='M 22 11 L 23 26 C 23 29 25 31 27 31'/><path d='M 38 11 L 37 26 C 37 29 35 31 33 31'/><path d='M 30 33 L 30 62'/><path d='M 30 42 C 24 41 18 43 14 47 C 18 49 24 49 28 46 C 29 45 30 44 30 43'/><path d='M 30 44 C 36 43 42 45 46 49 C 42 51 36 51 32 48 C 31 47 30 46 30 45'/><circle cx='20' cy='56' r='7'/></g></svg>">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Montserrat:wght@800;900&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
@@ -19,11 +20,11 @@ body{font-family:'Sora',sans-serif;background:var(--cr);color:var(--tx);min-heig
 
 /* ── HEADER ── */
 header{background:var(--v);padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.15);}
-.logo{display:flex;align-items:center;gap:8px;}
-.li{width:26px;height:26px;background:var(--do);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;}
-.lt{font-family:'DM Serif Display',serif;font-size:16px;color:var(--cr);}
-.lt span{color:var(--do);}
-.lt small{display:block;font-family:'Sora',sans-serif;font-size:9px;color:rgba(245,240,232,0.6);font-weight:400;margin-top:-2px;letter-spacing:0.04em;}
+.logo{display:flex;align-items:center;gap:9px;}
+.logo svg{width:28px;height:32px;flex-shrink:0;}
+.logo svg path,.logo svg circle{stroke:var(--cr);}
+.lt{font-family:'Montserrat','Sora',sans-serif;font-size:15px;color:var(--cr);font-weight:800;letter-spacing:0.06em;line-height:1;}
+.lt small{display:block;font-family:'Sora',sans-serif;font-size:9px;color:rgba(245,240,232,0.6);font-weight:400;margin-top:3px;letter-spacing:0.04em;text-transform:none;}
 .user-pill{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:var(--cr);border-radius:14px;padding:5px 11px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;cursor:pointer;}
 .user-pill:active{background:rgba(255,255,255,0.2);}
 
@@ -184,6 +185,32 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--v);color:var(--cr);padding:9px 18px;border-radius:18px;font-size:12.5px;white-space:nowrap;opacity:0;transition:all 0.25s;pointer-events:none;z-index:500;box-shadow:0 4px 14px rgba(0,0,0,0.2);max-width:90%;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+/* ── INFORMES TABS ── */
+.fb-btn-inf{padding:6px 14px;border-radius:14px;border:1.5px solid var(--co);background:var(--wh);color:var(--ts);font-family:'Sora',sans-serif;font-size:12px;font-weight:600;cursor:pointer;}
+.fb-btn-inf.active{background:var(--v);color:var(--cr);border-color:var(--v);}
+
+/* ── REPORT CARDS ── */
+.rep-card{background:var(--wh);border-radius:11px;padding:13px 14px;margin-bottom:9px;box-shadow:var(--sh);}
+.rep-card-h{display:flex;align-items:center;gap:11px;margin-bottom:9px;}
+.rep-card-avatar{width:36px;height:36px;border-radius:50%;background:var(--vc);color:white;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;}
+.rep-card-info{flex:1;min-width:0;}
+.rep-card-name{font-size:13.5px;font-weight:600;color:var(--v);}
+.rep-card-meta{font-size:10.5px;color:var(--ts);margin-top:2px;}
+.rep-card-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.rep-stat{background:var(--cr);border-radius:7px;padding:7px 6px;text-align:center;}
+.rep-stat-n{font-family:'DM Mono',monospace;font-size:14px;font-weight:700;color:var(--v);line-height:1;}
+.rep-stat-l{font-size:9px;color:var(--ts);text-transform:uppercase;letter-spacing:0.05em;margin-top:3px;}
+.rep-totals{background:linear-gradient(135deg,var(--v),var(--vm));color:var(--cr);border-radius:11px;padding:14px;margin-bottom:11px;}
+.rep-totals-label{font-size:10px;text-transform:uppercase;letter-spacing:0.1em;opacity:0.7;margin-bottom:5px;}
+.rep-totals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.rep-totals-stat{text-align:center;}
+.rep-totals-n{font-family:'DM Serif Display',serif;font-size:22px;line-height:1;}
+.rep-totals-l{font-size:10px;opacity:0.7;text-transform:uppercase;letter-spacing:0.05em;margin-top:4px;}
+.rep-detail-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:11.5px;border-top:1px solid var(--co);}
+.rep-detail-row:first-child{border-top:none;}
+.rep-detail-lbl{color:var(--ts);}
+.rep-detail-val{font-family:'DM Mono',monospace;font-weight:600;color:var(--v);}
+
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-thumb{background:var(--co);border-radius:8px;}
 
@@ -225,12 +252,11 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
 
 <!-- ═══════════════ LOGIN VIEWS ═══════════════ -->
 <div id="screen-login" class="login">
-  <div class="login-logo">🌸</div>
-  <div class="login-title">Buscaflor · Equipo</div>
-  <div class="login-sub">Selecciona quién eres para fichar y gestionar tu jornada</div>
+  <div class="login-title" style="font-family:'Montserrat','Sora',sans-serif;font-weight:800;letter-spacing:0.1em;font-size:32px;color:#1a3a2a;margin-top:40px;">BUSCAFLOR</div>
+  <div class="login-sub" style="margin-top:6px;">Equipo · Selecciona quién eres</div>
   <div class="login-grid" id="loginGrid"></div>
   <div style="font-size:10.5px;color:var(--ts);text-align:center;line-height:1.5;">
-    Cada persona usa su propio PIN.<br>Los datos se guardan en este dispositivo.
+    Cada persona usa su propio PIN.<br>Los datos se sincronizan con todo el equipo.
   </div>
 </div>
 
@@ -238,7 +264,7 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
   <button class="pin-back" onclick="showLogin()">← Volver</button>
   <div class="pin-avatar" id="pinAvatar">?</div>
   <div class="pin-name" id="pinName">—</div>
-  <div class="pin-prompt">Introduce tu PIN de 4 dígitos</div>
+  <div class="pin-prompt" id="pinPrompt">Introduce tu PIN de 4 dígitos</div>
   <div class="pin-dots" id="pinDots">
     <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
   </div>
@@ -251,11 +277,13 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
 
 <header>
   <div class="logo">
-    <div class="li">🌸</div>
-    <div class="lt">Busca<span>flor</span><small id="hUserRole">—</small></div>
+    <div class="lt">BUSCAFLOR<small id="hUserRole">—</small></div>
   </div>
-  <div class="user-pill" onclick="askLogout()">
-    <span id="hUserName">—</span> · Salir
+  <div style="display:flex;gap:6px;align-items:center;">
+    <button onclick="askChangePin()" title="Cambiar PIN" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:var(--cr);border-radius:14px;padding:5px 9px;font-size:12px;font-weight:600;cursor:pointer;">🔒</button>
+    <div class="user-pill" onclick="askLogout()">
+      <span id="hUserName">—</span> · Salir
+    </div>
   </div>
 </header>
 
@@ -272,7 +300,7 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
       <div class="ti">🏖️</div><div class="tlbl">Vacaciones</div>
     </div>
     <div class="tab" data-view="emp-findes" onclick="switchView('emp-findes')">
-      <div class="ti">📅</div><div class="tlbl">Findes</div>
+      <div class="ti">📅</div><div class="tlbl">Sábados</div>
     </div>
   </div>
 
@@ -288,7 +316,10 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
       <div class="ti">🏖️</div><div class="tlbl">Vacaciones <span class="tb" id="badgeVac" style="display:none;">0</span></div>
     </div>
     <div class="tab" data-view="adm-findes" onclick="switchView('adm-findes')">
-      <div class="ti">📅</div><div class="tlbl">Findes</div>
+      <div class="ti">📅</div><div class="tlbl">Sábados</div>
+    </div>
+    <div class="tab" data-view="adm-informes" onclick="switchView('adm-informes')">
+      <div class="ti">📈</div><div class="tlbl">Informes</div>
     </div>
   </div>
 
@@ -346,7 +377,7 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
       <div class="card">
         <div class="vac-sum">
           <div class="vac-stat"><div class="vac-stat-n" id="statHoursMonth">0h</div><div class="vac-stat-l">Horas mes</div></div>
-          <div class="vac-stat"><div class="vac-stat-n" id="statPendJorn">0</div><div class="vac-stat-l">Por validar</div></div>
+          <div class="vac-stat"><div class="vac-stat-n" id="statPendJorn">0</div><div class="vac-stat-l">Hoy</div></div>
           <div class="vac-stat"><div class="vac-stat-n" id="statPendVac">0</div><div class="vac-stat-l">Solicitudes</div></div>
         </div>
       </div>
@@ -358,6 +389,11 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
     <div class="scroll" id="admJornadasList"></div>
   </div>
 
+  <!-- ═══ ADMIN: VACATIONS ═══ -->
+  <div class="view" id="view-adm-vacas">
+    <div class="scroll" id="admVacasList"></div>
+  </div>
+
   <!-- ═══ EMPLOYEE: FINDES ═══ -->
   <div class="view" id="view-emp-findes">
     <div class="scroll" id="empFindesList"></div>
@@ -366,6 +402,16 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
   <!-- ═══ ADMIN: FINDES ═══ -->
   <div class="view" id="view-adm-findes">
     <div class="scroll" id="admFindesList"></div>
+  </div>
+
+  <!-- ═══ ADMIN: INFORMES ═══ -->
+  <div class="view" id="view-adm-informes">
+    <div style="background:var(--wh);border-bottom:1px solid var(--co);padding:11px 14px;display:flex;gap:7px;flex-shrink:0;">
+      <button id="infTabMonth" class="fb-btn-inf active" onclick="setInfMode('month')">📅 Mensual</button>
+      <button id="infTabYear" class="fb-btn-inf" onclick="setInfMode('year')">🗓️ Anual</button>
+      <select id="infPeriodSel" style="margin-left:auto;border:1.5px solid var(--co);border-radius:14px;padding:5px 11px;font-family:Sora,sans-serif;font-size:12px;font-weight:600;background:var(--wh);outline:none;cursor:pointer;color:var(--v);"></select>
+    </div>
+    <div class="scroll" id="admInformesList"></div>
   </div>
 </main>
 
@@ -383,7 +429,7 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
       <div class="cal-legend">
         <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--vc);"></div>Seleccionado</div>
         <div class="cal-legend-item"><div class="cal-legend-dot" style="background:rgba(201,168,76,0.4);"></div>Ya solicitado</div>
-        <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--co);"></div>Fin de semana</div>
+        <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--co);"></div>Sáb/Dom (no cuenta)</div>
       </div>
       <div class="card" id="vacReqSummary" style="display:none;margin-top:11px;background:var(--cr);">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
@@ -458,25 +504,20 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
   </div>
 </div>
 
-<!-- ═══ MODAL: WEEKEND UNAVAILABILITY ═══ -->
+<!-- ═══ MODAL: SATURDAY UNAVAILABILITY ═══ -->
 <div class="mo" id="mFinde">
   <div class="ms">
     <div class="msh">
-      <h3 id="mFindeTitle">📅 Finde</h3>
+      <h3 id="mFindeTitle">📅 Sábado</h3>
       <button class="msc" onclick="closeM('mFinde')">✕</button>
     </div>
     <div class="msb">
       <div id="mFindeHead" style="margin-bottom:14px;font-size:13px;color:var(--ts);"></div>
       <div class="fg">
-        <span class="fl">¿Qué días no puedes?</span>
-        <div style="display:flex;gap:8px;">
-          <label style="flex:1;display:flex;align-items:center;gap:6px;padding:10px;background:var(--cr);border:1.5px solid var(--co);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
-            <input type="checkbox" id="findeSat" style="accent-color:var(--vc);width:16px;height:16px;"> Sábado
-          </label>
-          <label style="flex:1;display:flex;align-items:center;gap:6px;padding:10px;background:var(--cr);border:1.5px solid var(--co);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
-            <input type="checkbox" id="findeSun" style="accent-color:var(--vc);width:16px;height:16px;"> Domingo
-          </label>
-        </div>
+        <span class="fl">¿Vas a estar disponible este sábado?</span>
+        <label style="display:flex;align-items:center;gap:8px;padding:12px;background:var(--cr);border:1.5px solid var(--co);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;">
+          <input type="checkbox" id="findeSat" style="accent-color:var(--ro);width:18px;height:18px;"> No estaré disponible
+        </label>
       </div>
       <div class="fg">
         <span class="fl">Motivo (opcional)</span>
@@ -523,17 +564,26 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
 // ════════════════════════════════════════════════════════════
 var SUPABASE_URL = 'https://fgkbkpdqwhpyunzbdpue.supabase.co';
 var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZna2JrcGRxd2hweXVuemJkcHVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NzMyOTksImV4cCI6MjA5MzU0OTI5OX0.UIRHQQRfn2U3xrn77Ij8YG4dXp57dsaaeFUhbNkmwJc';
-var sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+var sb = null;
+try {
+  if(typeof supabase !== 'undefined' && supabase.createClient){
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  } else {
+    console.error('Supabase no se cargó del CDN');
+  }
+} catch(e){
+  console.error('Error inicializando Supabase:', e);
+}
 
 // ════════════════════════════════════════════════════════════
 // ── STATE & STORAGE ─────────────────────────────────────────
 // ════════════════════════════════════════════════════════════
 var TEAM = [
-  { id: 'javier', name: 'Javier', role: 'admin', pin: '0000', initials: 'JA' },
+  { id: 'javier', name: 'Admin', role: 'admin', pin: '0000', initials: 'AD' },
   { id: 'juan',   name: 'Juan',   role: 'employee', pin: '1111', initials: 'JU' },
   { id: 'carlos', name: 'Carlos', role: 'employee', pin: '2222', initials: 'CA' },
   { id: 'paco',   name: 'Paco',   role: 'employee', pin: '3333', initials: 'PA' },
-  { id: 'javier_emp', name: 'Javier R.', role: 'employee', pin: '4444', initials: 'JR' }
+  { id: 'javier_emp', name: 'Javier', role: 'employee', pin: '4444', initials: 'JA' }
 ];
 var VAC_TOTAL = 22; // días laborables / año
 
@@ -598,6 +648,7 @@ var FIELD_MAP = {
 
 // Load all data from Supabase into the cache
 async function syncFromCloud(){
+  if(!sb){ console.warn('Sin cliente Supabase'); return false; }
   try {
     var [jornR, vacR, findR] = await Promise.all([
       sb.from('jornadas').select('*'),
@@ -616,6 +667,7 @@ async function syncFromCloud(){
 
 // Subscribe to realtime updates so changes appear without refresh
 function subscribeRealtime(){
+  if(!sb) return;
   ['jornadas','vacaciones','findes'].forEach(function(table){
     sb.channel('rt-'+table)
       .on('postgres_changes', { event: '*', schema: 'public', table: table }, async function(){
@@ -631,6 +683,7 @@ function loadData(k){ return CACHE[k] || []; }
 
 // Push a single record to Supabase (upsert)
 async function pushOne(k, item){
+  if(!sb){ toast('⚠ Sin conexión con la nube'); return false; }
   var map = FIELD_MAP[k];
   if(!map) return;
   var row = map.toRow(item);
@@ -641,6 +694,7 @@ async function pushOne(k, item){
 
 // Delete by id
 async function deleteOne(k, id){
+  if(!sb){ return false; }
   var map = FIELD_MAP[k];
   if(!map) return;
   var { error } = await sb.from(map.table).delete().eq('id', id);
@@ -669,6 +723,32 @@ TEAM = loadTeam();
 var _user = null; // current logged-in user
 var _pinBuffer = '';
 var _pendingUser = null;
+var _pinMode = 'login'; // 'login' | 'set-new' | 'confirm-new'
+var _newPinFirst = ''; // para confirmar el nuevo PIN
+
+// Sistema de PINs personalizados (guardados localmente por dispositivo)
+function getPin(userId){
+  try {
+    var custom = JSON.parse(localStorage.getItem('bf_rrhh_pins')||'{}');
+    if(custom[userId]) return custom[userId];
+  } catch{}
+  // Si no hay PIN custom, devolver el inicial
+  var u = TEAM.find(function(x){return x.id===userId;});
+  return u ? u.pin : null;
+}
+function setPin(userId, newPin){
+  try {
+    var custom = JSON.parse(localStorage.getItem('bf_rrhh_pins')||'{}');
+    custom[userId] = newPin;
+    localStorage.setItem('bf_rrhh_pins', JSON.stringify(custom));
+  } catch(e){ console.error('Error guardando PIN:', e); }
+}
+function hasCustomPin(userId){
+  try {
+    var custom = JSON.parse(localStorage.getItem('bf_rrhh_pins')||'{}');
+    return !!custom[userId];
+  } catch{ return false; }
+}
 
 // Format date
 function fmtDate(s){
@@ -686,7 +766,16 @@ function fmtDateLong(s){
   var M = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   return D[d.getDay()]+', '+d.getDate()+' de '+M[d.getMonth()]+' de '+d.getFullYear();
 }
-function todayStr(){ return new Date().toISOString().split('T')[0]; }
+function todayStr(){ return dateStr(new Date()); }
+// Formatea una Date como YYYY-MM-DD en hora LOCAL (no UTC).
+// Esto evita que en zonas horarias como Europa, una fecha a las 00:00
+// se convierta en el día anterior cuando se pasa a UTC.
+function dateStr(d){
+  var y = d.getFullYear();
+  var m = String(d.getMonth()+1).padStart(2,'0');
+  var day = String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+}
 function getUserById(id){ return TEAM.find(function(u){return u.id===id;}); }
 
 // Toast
@@ -724,13 +813,22 @@ function selectUser(id){
   _pendingUser = getUserById(id);
   if(!_pendingUser) return;
   _pinBuffer = '';
+  _pinMode = 'login';
+  _newPinFirst = '';
   document.getElementById('screen-login').style.display='none';
   document.getElementById('screen-pin').style.display='flex';
   var av = document.getElementById('pinAvatar');
   av.textContent = _pendingUser.initials;
   av.classList.toggle('admin', _pendingUser.role==='admin');
   document.getElementById('pinName').textContent = _pendingUser.name;
-  document.getElementById('pinHint').textContent = 'PIN inicial: '+_pendingUser.pin+' (cámbialo en ajustes)';
+  // Mostrar PIN inicial solo si NO ha cambiado todavía
+  if(!hasCustomPin(_pendingUser.id)){
+    document.getElementById('pinPrompt').textContent = 'Introduce tu PIN de 4 dígitos';
+    document.getElementById('pinHint').textContent = 'PIN inicial: '+_pendingUser.pin+' — te pediremos cambiarlo después';
+  } else {
+    document.getElementById('pinPrompt').textContent = 'Introduce tu PIN de 4 dígitos';
+    document.getElementById('pinHint').textContent = '';
+  }
   renderPinPad();
   updatePinDots();
 }
@@ -763,15 +861,64 @@ function updatePinDots(){
   });
 }
 function checkPin(){
-  if(_pinBuffer === _pendingUser.pin){
-    _user = _pendingUser;
-    sessionStorage.setItem('bf_rrhh_session', _user.id);
-    enterApp();
-  } else {
-    document.querySelectorAll('#pinDots .pin-dot').forEach(function(d){d.classList.add('error');});
+  if(_pinMode === 'login'){
+    var expectedPin = getPin(_pendingUser.id);
+    if(_pinBuffer === expectedPin){
+      // Si todavía usa el PIN inicial → forzar cambio
+      if(!hasCustomPin(_pendingUser.id)){
+        _pinMode = 'set-new';
+        _pinBuffer = '';
+        document.getElementById('pinPrompt').textContent = '🔒 Crea tu PIN personal';
+        document.getElementById('pinHint').textContent = 'Elige 4 dígitos. No uses el PIN inicial.';
+        updatePinDots();
+        return;
+      }
+      // Login normal
+      _user = _pendingUser;
+      sessionStorage.setItem('bf_rrhh_session', _user.id);
+      enterApp();
+    } else {
+      pinError();
+    }
+  } else if(_pinMode === 'set-new'){
+    // No permitir el PIN inicial NI el actual como nuevo
+    var currentPin = getPin(_pendingUser.id);
+    if(_pinBuffer === _pendingUser.pin || _pinBuffer === currentPin){
+      _pinBuffer = '';
+      document.getElementById('pinHint').textContent = '⚠ Elige un PIN diferente al actual.';
+      updatePinDots();
+      return;
+    }
+    _newPinFirst = _pinBuffer;
     _pinBuffer = '';
-    setTimeout(updatePinDots, 500);
+    _pinMode = 'confirm-new';
+    document.getElementById('pinPrompt').textContent = '🔒 Repite tu PIN para confirmar';
+    document.getElementById('pinHint').textContent = '';
+    updatePinDots();
+  } else if(_pinMode === 'confirm-new'){
+    if(_pinBuffer === _newPinFirst){
+      // Guardar nuevo PIN y entrar
+      setPin(_pendingUser.id, _pinBuffer);
+      _user = _pendingUser;
+      sessionStorage.setItem('bf_rrhh_session', _user.id);
+      enterApp();
+      setTimeout(function(){ toast('🔒 PIN actualizado. Recuérdalo bien.'); }, 300);
+    } else {
+      // No coinciden, volver a empezar
+      _pinBuffer = '';
+      _newPinFirst = '';
+      _pinMode = 'set-new';
+      document.getElementById('pinPrompt').textContent = '🔒 Crea tu PIN personal';
+      document.getElementById('pinHint').textContent = '⚠ No coincidían. Inténtalo otra vez.';
+      pinError();
+    }
   }
+}
+
+function pinError(){
+  document.querySelectorAll('#pinDots .pin-dot').forEach(function(d){d.classList.add('error');});
+  _pinBuffer = '';
+  setTimeout(updatePinDots, 500);
 }
 
 function askLogout(){
@@ -788,6 +935,27 @@ function doLogout(){
 }
 
 function logout(){ askLogout(); }
+
+// Cambiar PIN: vuelve a la pantalla de PIN, modo "set-new"
+function askChangePin(){
+  if(!_user) return;
+  _pendingUser = _user;
+  _pinBuffer = '';
+  _newPinFirst = '';
+  _pinMode = 'set-new';
+  // Cerrar sesión de la app y mostrar pantalla de PIN
+  document.getElementById('screen-app').style.display='none';
+  document.getElementById('screen-login').style.display='none';
+  document.getElementById('screen-pin').style.display='flex';
+  var av = document.getElementById('pinAvatar');
+  av.textContent = _pendingUser.initials;
+  av.classList.toggle('admin', _pendingUser.role==='admin');
+  document.getElementById('pinName').textContent = _pendingUser.name;
+  document.getElementById('pinPrompt').textContent = '🔒 Crea tu nuevo PIN';
+  document.getElementById('pinHint').textContent = 'Elige 4 dígitos diferentes al anterior.';
+  renderPinPad();
+  updatePinDots();
+}
 
 function enterApp(){
   document.getElementById('screen-login').style.display='none';
@@ -825,6 +993,7 @@ function refreshView(v){
   else if(v==='adm-jornadas') renderAdmJornadas();
   else if(v==='adm-vacas') renderAdmVacas();
   else if(v==='adm-findes') renderAdmFindes();
+  else if(v==='adm-informes') { populateInfPeriodSelect(); renderAdmInformes(); }
   updateBadges();
 }
 
@@ -832,6 +1001,7 @@ function refreshAll(){
   if(!_user) return;
   if(_user.role==='admin'){
     renderAdmHome(); renderAdmJornadas(); renderAdmVacas(); renderAdmFindes();
+    if(document.getElementById('view-adm-informes').classList.contains('active')) renderAdmInformes();
   } else {
     renderEmpHome(); renderEmpJornadas(); renderEmpVacas(); renderEmpFindes();
   }
@@ -920,12 +1090,13 @@ async function empClock(){
     var ok = await pushOne('jorn', newJ);
     if(ok) toast('▶ Entrada fichada — '+t);
   } else if(!existing.checkOut){
-    // Clock out → submit for validation
+    // Clock out → auto-approved (the employee validates their own hours)
     existing.checkOut = t;
     existing.hours = calcHours(existing.checkIn, t);
-    existing.status = 'pending';
+    existing.status = 'approved';
+    existing.approvedAt = Date.now();
     var ok = await pushOne('jorn', existing);
-    if(ok) toast('⏹ Salida fichada — Pendiente de validación');
+    if(ok) toast('⏹ Salida fichada — '+fmtHours(existing.hours)+' validadas');
   } else {
     toast('⚠ Ya has fichado entrada y salida hoy');
     return;
@@ -952,9 +1123,9 @@ function renderEmpHome(){
     btn.style.display = 'flex';
   } else {
     statusBox.classList.remove('working');
-    var statusTxt = today.status==='pending' ? '⏳ Pendiente de validación' :
-                    today.status==='approved' ? '✓ Validada' :
-                    today.status==='rejected' ? '✕ Rechazada' : '';
+    var statusTxt = today.status==='approved' ? '✓ Jornada cerrada' :
+                    today.status==='pending' ? '⏳ Pendiente de revisión' :
+                    today.status==='rejected' ? '✕ Revisada por admin' : '';
     statusBox.innerHTML = '<div class="clock-status-label">Jornada de hoy · '+statusTxt+'</div>'+
       '<div class="clock-status-val">'+today.checkIn+' → '+today.checkOut+' · '+fmtHours(today.hours)+'</div>';
     btn.style.display = 'none';
@@ -980,7 +1151,7 @@ function renderEmpWeekSummary(){
   var totalH = 0;
   for(var i=0;i<7;i++){
     var d = new Date(monday); d.setDate(monday.getDate()+i);
-    var ds = d.toISOString().split('T')[0];
+    var ds = dateStr(d);
     var j = jorn.find(function(x){return x.date===ds;});
     var dow = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'][i];
     var dn = d.getDate();
@@ -988,7 +1159,7 @@ function renderEmpWeekSummary(){
     var iconCls = j ? (j.status==='approved'?'green':j.status==='rejected'?'red':'gold') : (weekend?'':'gray');
     var iconLabel = j ? (j.status==='approved'?'✓':j.status==='rejected'?'✕':'⏳') : (weekend?'·':'—');
     var hoursTxt = j ? fmtHours(j.hours) : (weekend?'fin de semana':'sin fichar');
-    var subtxt = j ? (j.status==='pending'?'Pendiente':j.status==='open'?'Abierta':j.status==='approved'?'Validada':'Rechazada') : '';
+    var subtxt = j ? (j.status==='pending'?'Pendiente':j.status==='open'?'En curso':j.status==='approved'?'Cerrada':'Revisada') : '';
     if(j && j.status==='approved') totalH += j.hours;
     html += '<div class="row" style="border-radius:0;box-shadow:none;border-bottom:1px solid var(--co);margin-bottom:0;">'+
       '<div class="row-icon '+(iconCls||'')+'" style="background:'+(weekend&&!j?'var(--cr)':'')+';">'+iconLabel+'</div>'+
@@ -1000,7 +1171,7 @@ function renderEmpWeekSummary(){
     '</div>';
   }
   html += '<div style="padding:10px 11px;background:var(--cr);font-size:11px;color:var(--ts);display:flex;justify-content:space-between;border-radius:0 0 12px 12px;">'+
-    '<span>Total horas validadas</span><strong style="color:var(--v);font-family:DM Mono,monospace;">'+fmtHours(totalH)+'</strong></div>';
+    '<span>Total horas semana</span><strong style="color:var(--v);font-family:DM Mono,monospace;">'+fmtHours(totalH)+'</strong></div>';
   box.innerHTML = html;
 }
 
@@ -1046,7 +1217,7 @@ function renderEmpJornadas(){
     var totalH = items.filter(function(x){return x.status==='approved';}).reduce(function(a,b){return a+b.hours;},0);
     html += '<div class="section-title">'+monthName+' '+yr+'<div class="section-line"></div><span class="section-count">'+fmtHours(totalH)+' validadas</span></div>';
     items.forEach(function(j){
-      var statusTxt = j.status==='approved'?'Validada':j.status==='rejected'?'Rechazada':j.status==='pending'?'Pendiente':'En curso';
+      var statusTxt = j.status==='approved'?'Cerrada':j.status==='rejected'?'Revisada':j.status==='pending'?'Pendiente':'En curso';
       var statusCls = j.status==='approved'?'approved':j.status==='rejected'?'rejected':'pending';
       var iconCls = j.status==='approved'?'green':j.status==='rejected'?'red':'gold';
       var times = j.checkOut ? j.checkIn+' → '+j.checkOut : j.checkIn+' → en curso';
@@ -1175,7 +1346,7 @@ function renderCalendar(){
     var d1 = new Date(v.startDate+'T00:00:00');
     var d2 = new Date(v.endDate+'T00:00:00');
     while(d1<=d2){
-      occupiedDates[d1.toISOString().split('T')[0]] = true;
+      occupiedDates[dateStr(d1)] = true;
       d1.setDate(d1.getDate()+1);
     }
   });
@@ -1193,7 +1364,7 @@ function renderCalendar(){
     var ds = y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     var dt = new Date(ds+'T00:00:00');
     var dow = (dt.getDay()+6)%7;
-    var weekend = dow>=5;
+    var weekend = dow>=5; // sábado y domingo
     var past = ds < today;
     var occupied = occupiedDates[ds];
     var classes = ['cal-day'];
@@ -1239,7 +1410,7 @@ function countWorkdays(start, end){
   var n = 0;
   while(d1<=d2){
     var dow = d1.getDay();
-    if(dow!==0 && dow!==6) n++;
+    if(dow!==0 && dow!==6) n++; // ni sábado ni domingo cuentan en vacaciones
     d1.setDate(d1.getDate()+1);
   }
   return n;
@@ -1330,10 +1501,12 @@ function renderAdmHome(){
   });
   document.getElementById('teamList').innerHTML = html;
   // Stats
-  var thisMonth = new Date().toISOString().substring(0,7);
+  var thisMonth = dateStr(new Date()).substring(0,7);
+  var today = todayStr();
   var monthHours = jorn.filter(function(j){return j.date.startsWith(thisMonth) && j.status==='approved';}).reduce(function(a,b){return a+b.hours;},0);
+  var todayJorns = jorn.filter(function(j){return j.date===today;}).length;
   document.getElementById('statHoursMonth').textContent = Math.round(monthHours)+'h';
-  document.getElementById('statPendJorn').textContent = jorn.filter(function(j){return j.status==='pending';}).length;
+  document.getElementById('statPendJorn').textContent = todayJorns;
   document.getElementById('statPendVac').textContent = vac.filter(function(v){return v.status==='pending';}).length;
 }
 
@@ -1347,22 +1520,38 @@ function renderAdmJornadas(){
     box.innerHTML = '<div class="es"><span class="ei">⏱</span><div class="et">Sin jornadas</div><div class="ed">Cuando el equipo fiche, aparecerá aquí.</div></div>';
     return;
   }
-  // Group: Pending first, then approved/rejected
-  var pending = jorn.filter(function(j){return j.status==='pending';});
-  var others = jorn.filter(function(j){return j.status!=='pending' && j.status!=='open';});
+  // Separar: en curso, pendientes (legado), validadas/rechazadas
   var open = jorn.filter(function(j){return j.status==='open';});
+  var pending = jorn.filter(function(j){return j.status==='pending';});
+  var others = jorn.filter(function(j){return j.status!=='open' && j.status!=='pending';});
   var html = '';
-  if(pending.length){
-    html += '<div class="section-title">Pendientes de validar<div class="section-line"></div><span class="section-count">'+pending.length+'</span></div>';
-    pending.forEach(function(j){html += renderAdmJornRow(j);});
-  }
   if(open.length){
-    html += '<div class="section-title">En curso<div class="section-line"></div><span class="section-count">'+open.length+'</span></div>';
+    html += '<div class="section-title">🟢 En curso ahora<div class="section-line"></div><span class="section-count">'+open.length+'</span></div>';
     open.forEach(function(j){html += renderAdmJornRow(j);});
   }
+  if(pending.length){
+    html += '<div class="section-title">⏳ Pendientes (revisar)<div class="section-line"></div><span class="section-count">'+pending.length+'</span></div>';
+    pending.forEach(function(j){html += renderAdmJornRow(j);});
+  }
   if(others.length){
+    // Group by date
+    var byDate = {};
+    var dateOrder = [];
+    others.forEach(function(j){
+      if(!byDate[j.date]){ byDate[j.date]=[]; dateOrder.push(j.date); }
+      byDate[j.date].push(j);
+    });
+    dateOrder = dateOrder.filter(function(v,i,a){return a.indexOf(v)===i;});
     html += '<div class="section-title">Histórico<div class="section-line"></div><span class="section-count">'+others.length+'</span></div>';
-    others.slice(0,30).forEach(function(j){html += renderAdmJornRow(j);});
+    dateOrder.slice(0,30).forEach(function(d){
+      var items = byDate[d];
+      var totalH = items.reduce(function(a,b){return a+(b.hours||0);},0);
+      html += '<div style="font-size:11px;font-weight:700;color:var(--vm);background:var(--cr);padding:5px 11px;border-radius:7px;margin:10px 0 5px;display:flex;justify-content:space-between;">'+
+        '<span>'+fmtDate(d).toUpperCase()+'</span>'+
+        '<span style="font-family:DM Mono,monospace;">'+items.length+' jorn. · '+fmtHours(totalH)+'</span>'+
+      '</div>';
+      items.forEach(function(j){html += renderAdmJornRow(j);});
+    });
   }
   box.innerHTML = html;
 }
@@ -1538,34 +1727,30 @@ async function confirmReject(){
 }
 
 // ════════════════════════════════════════════════════════════
-// ── FINDES (WEEKEND AVAILABILITY) ───────────────────────────
+// ── SÁBADOS (SATURDAY AVAILABILITY) ─────────────────────────
 // ════════════════════════════════════════════════════════════
-// Generate next N weekends starting from this week
+// Generate next N Saturdays starting from this week
 function getUpcomingWeekends(n){
-  var weekends = [];
+  var saturdays = [];
   var today = new Date();
   today.setHours(0,0,0,0);
-  // Find the Saturday of current week (or next Saturday if today is Sunday)
   var d = new Date(today);
   var dow = d.getDay(); // 0=Sun, 6=Sat
   var daysUntilSat = (6 - dow + 7) % 7;
-  if(dow === 0) daysUntilSat = 6; // Sunday → next Saturday is 6 days
   if(dow === 6) daysUntilSat = 0; // already Saturday
   d.setDate(d.getDate() + daysUntilSat);
   for(var i=0;i<n;i++){
     var sat = new Date(d);
-    var sun = new Date(d); sun.setDate(d.getDate()+1);
-    var satStr = sat.toISOString().split('T')[0];
-    var sunStr = sun.toISOString().split('T')[0];
-    weekends.push({
-      key: satStr, // identify by Saturday
+    var satStr = dateStr(sat);
+    saturdays.push({
+      key: satStr,
       sat: satStr,
-      sun: sunStr,
-      label: fmtDate(satStr) + ' — ' + fmtDate(sunStr).split(' ').slice(1).join(' ')
+      sun: null,
+      label: fmtDate(satStr)
     });
     d.setDate(d.getDate() + 7);
   }
-  return weekends;
+  return saturdays;
 }
 
 function getFindeStatus(userId, weekendKey){
@@ -1575,32 +1760,26 @@ function getFindeStatus(userId, weekendKey){
 
 function renderEmpFindes(){
   var box = document.getElementById('empFindesList');
-  var weekends = getUpcomingWeekends(12);
+  var saturdays = getUpcomingWeekends(12);
   var html = '<div class="card" style="background:rgba(58,106,154,0.06);box-shadow:none;border:1px solid rgba(58,106,154,0.15);">'+
     '<div style="font-size:12.5px;color:var(--ts);line-height:1.6;">'+
-    '💡 Por defecto se asume que estás <strong style="color:var(--vc);">disponible</strong> todos los findes.<br>Solo marca aquí los días que <strong style="color:var(--ro);">no puedes</strong> trabajar (eventos, viajes, etc).'+
+    '💡 Por defecto se asume que estás <strong style="color:var(--vc);">disponible</strong> todos los sábados.<br>Solo marca aquí los que <strong style="color:var(--ro);">no puedes</strong> trabajar (eventos, viajes, etc).'+
     '</div></div>';
-  html += '<div class="section-title">Próximos findes<div class="section-line"></div><span class="section-count">'+weekends.length+'</span></div>';
-  weekends.forEach(function(w){
+  html += '<div class="section-title">Próximos sábados<div class="section-line"></div><span class="section-count">'+saturdays.length+'</span></div>';
+  saturdays.forEach(function(w){
     var f = getFindeStatus(_user.id, w.key);
     var notSat = f && f.notAvailable && f.notAvailable.indexOf('sat')>=0;
-    var notSun = f && f.notAvailable && f.notAvailable.indexOf('sun')>=0;
-    var bothOff = notSat && notSun;
-    var someOff = notSat || notSun;
     var iconCls, icon, statusTxt;
-    if(bothOff){ iconCls='red'; icon='✕'; statusTxt='Finde completo no disponible'; }
-    else if(someOff){
-      iconCls='gold'; icon='!';
-      statusTxt = 'No disponible '+(notSat?'sábado':'')+(notSun?'domingo':'');
-    } else { iconCls='green'; icon='✓'; statusTxt='Disponible todo el finde'; }
-    html += '<div class="row '+(bothOff?'rejected':someOff?'pending':'approved')+'">'+
+    if(notSat){ iconCls='red'; icon='✕'; statusTxt='No disponible'; }
+    else { iconCls='green'; icon='✓'; statusTxt='Disponible'; }
+    html += '<div class="row '+(notSat?'rejected':'approved')+'">'+
       '<div class="row-icon '+iconCls+'">'+icon+'</div>'+
       '<div class="row-body">'+
         '<div class="row-title">'+w.label+'</div>'+
         '<div class="row-sub">'+statusTxt+'</div>'+
       '</div>'+
       '<div class="row-actions">'+
-        '<button class="row-act ed" onclick="openFindeModal(\''+w.key+'\',\''+w.sat+'\',\''+w.sun+'\')">✏️</button>'+
+        '<button class="row-act ed" onclick="openFindeModal(\''+w.key+'\',\''+w.sat+'\')">✏️</button>'+
       '</div>'+
     '</div>';
     if(f && f.note){
@@ -1610,39 +1789,34 @@ function renderEmpFindes(){
   box.innerHTML = html;
 }
 
-var _findeKey = null, _findeSat = null, _findeSun = null;
-function openFindeModal(key, sat, sun){
-  _findeKey = key; _findeSat = sat; _findeSun = sun;
+var _findeKey = null, _findeSat = null;
+function openFindeModal(key, sat){
+  _findeKey = key; _findeSat = sat;
   var existing = getFindeStatus(_user.id, key);
-  document.getElementById('mFindeTitle').textContent = '📅 ' + fmtDate(sat) + ' — ' + fmtDate(sun).split(' ').slice(1).join(' ');
-  document.getElementById('mFindeHead').textContent = 'Indica los días que NO puedes trabajar este finde.';
+  document.getElementById('mFindeTitle').textContent = '📅 ' + fmtDate(sat);
+  document.getElementById('mFindeHead').textContent = '¿Vas a poder trabajar este sábado?';
   document.getElementById('findeSat').checked = existing && existing.notAvailable && existing.notAvailable.indexOf('sat')>=0;
-  document.getElementById('findeSun').checked = existing && existing.notAvailable && existing.notAvailable.indexOf('sun')>=0;
   document.getElementById('findeNote').value = existing && existing.note ? existing.note : '';
   document.getElementById('mFinde').classList.add('open');
 }
 
 async function saveFinde(){
   var notSat = document.getElementById('findeSat').checked;
-  var notSun = document.getElementById('findeSun').checked;
   var note = document.getElementById('findeNote').value.trim();
-  // Find existing in cache
   var existing = CACHE.findes.find(function(f){return f.userId===_user.id && f.weekendKey===_findeKey;});
   if(existing){
-    // Remove from cloud and cache
     await deleteOne('findes', existing.id);
     CACHE.findes = CACHE.findes.filter(function(f){return f.id!==existing.id;});
   }
-  if(notSat || notSun || note){
+  if(notSat || note){
     var notAvailable = [];
     if(notSat) notAvailable.push('sat');
-    if(notSun) notAvailable.push('sun');
     var newF = {
       id: 'F-'+Date.now(),
       userId: _user.id,
       weekendKey: _findeKey,
       sat: _findeSat,
-      sun: _findeSun,
+      sun: null,
       notAvailable: notAvailable,
       note: note,
       updatedAt: Date.now()
@@ -1651,53 +1825,42 @@ async function saveFinde(){
     await pushOne('findes', newF);
   }
   closeM('mFinde');
-  if(!notSat && !notSun && !note) toast('✅ Disponible todo el finde');
+  if(!notSat && !note) toast('✅ Disponible este sábado');
   else toast('💾 Disponibilidad actualizada');
   refreshAll();
 }
 
 function renderAdmFindes(){
   var box = document.getElementById('admFindesList');
-  var weekends = getUpcomingWeekends(12);
+  var saturdays = getUpcomingWeekends(12);
   var employees = TEAM.filter(function(u){return u.role==='employee';});
   var findes = loadData('findes');
   var html = '<div class="card" style="background:rgba(58,106,154,0.06);box-shadow:none;border:1px solid rgba(58,106,154,0.15);">'+
     '<div style="font-size:12.5px;color:var(--ts);line-height:1.6;">'+
-    '🌸 Vista general de disponibilidad. Por defecto todos están disponibles. Solo se marcan en rojo/ámbar quien ha indicado que no puede.'+
+    '🌸 Disponibilidad de sábados. Por defecto todos disponibles. Aquí ves quién ha avisado de que no puede.'+
     '</div></div>';
-  weekends.forEach(function(w){
-    var unavailableSat = [];
-    var unavailableSun = [];
+  saturdays.forEach(function(w){
+    var unavailable = [];
     var notes = [];
     employees.forEach(function(u){
       var f = findes.find(function(x){return x.userId===u.id && x.weekendKey===w.key;});
       if(f){
-        if(f.notAvailable.indexOf('sat')>=0) unavailableSat.push(u);
-        if(f.notAvailable.indexOf('sun')>=0) unavailableSun.push(u);
+        if(f.notAvailable.indexOf('sat')>=0) unavailable.push(u);
         if(f.note) notes.push({user:u, note:f.note});
       }
     });
-    var availSat = employees.length - unavailableSat.length;
-    var availSun = employees.length - unavailableSun.length;
-    var critical = availSat <= 1 || availSun <= 1;
-    var warn = availSat <= 2 || availSun <= 2;
+    var avail = employees.length - unavailable.length;
+    var critical = avail <= 1;
+    var warn = avail <= 2;
     var borderColor = critical ? 'var(--ro)' : warn ? 'var(--do)' : 'var(--vc)';
     html += '<div class="card" style="border-left:4px solid '+borderColor+';padding:12px 14px;">'+
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;">'+
         '<div style="font-family:DM Serif Display,serif;font-size:14px;color:var(--v);">'+w.label+'</div>'+
         (critical ? '<span class="status-badge status-rejected">⚠ Crítico</span>' : warn ? '<span class="status-badge status-pending">Atención</span>' : '<span class="status-badge status-approved">✓ OK</span>')+
       '</div>'+
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">'+
-        '<div style="background:var(--cr);border-radius:8px;padding:8px 10px;">'+
-          '<div style="font-size:9.5px;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-bottom:4px;">Sábado</div>'+
-          '<div style="font-family:DM Mono,monospace;font-size:14px;font-weight:700;color:'+(availSat<=1?'var(--ro)':availSat<=2?'#6a4e10':'var(--vc)')+';">'+availSat+'/'+employees.length+' disp.</div>'+
-          (unavailableSat.length ? '<div style="font-size:10.5px;color:var(--ts);margin-top:4px;">No: '+unavailableSat.map(function(u){return u.name;}).join(', ')+'</div>' : '<div style="font-size:10.5px;color:var(--vc);margin-top:4px;">Todos disp.</div>')+
-        '</div>'+
-        '<div style="background:var(--cr);border-radius:8px;padding:8px 10px;">'+
-          '<div style="font-size:9.5px;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-bottom:4px;">Domingo</div>'+
-          '<div style="font-family:DM Mono,monospace;font-size:14px;font-weight:700;color:'+(availSun<=1?'var(--ro)':availSun<=2?'#6a4e10':'var(--vc)')+';">'+availSun+'/'+employees.length+' disp.</div>'+
-          (unavailableSun.length ? '<div style="font-size:10.5px;color:var(--ts);margin-top:4px;">No: '+unavailableSun.map(function(u){return u.name;}).join(', ')+'</div>' : '<div style="font-size:10.5px;color:var(--vc);margin-top:4px;">Todos disp.</div>')+
-        '</div>'+
+      '<div style="background:var(--cr);border-radius:8px;padding:9px 11px;">'+
+        '<div style="font-family:DM Mono,monospace;font-size:15px;font-weight:700;color:'+(avail<=1?'var(--ro)':avail<=2?'#6a4e10':'var(--vc)')+';">'+avail+'/'+employees.length+' disponibles</div>'+
+        (unavailable.length ? '<div style="font-size:11px;color:var(--ts);margin-top:5px;">No disp.: '+unavailable.map(function(u){return u.name;}).join(', ')+'</div>' : '<div style="font-size:11px;color:var(--vc);margin-top:5px;">Todos disponibles</div>')+
       '</div>';
     if(notes.length){
       html += '<div style="margin-top:9px;padding-top:9px;border-top:1px solid var(--co);">';
@@ -1711,23 +1874,324 @@ function renderAdmFindes(){
   box.innerHTML = html;
 }
 
+
 // ════════════════════════════════════════════════════════════
-// ── INIT ────────────────────────────────────────────────────
+// ── INFORMES (MENSUAL / ANUAL) ──────────────────────────────
 // ════════════════════════════════════════════════════════════
+var _infMode = 'month'; // 'month' | 'year'
+var _infPeriod = null;  // 'YYYY-MM' o 'YYYY'
+
+function setInfMode(mode){
+  _infMode = mode;
+  _infPeriod = null;
+  document.getElementById('infTabMonth').classList.toggle('active', mode==='month');
+  document.getElementById('infTabYear').classList.toggle('active', mode==='year');
+  populateInfPeriodSelect();
+  renderAdmInformes();
+}
+
+function populateInfPeriodSelect(){
+  var sel = document.getElementById('infPeriodSel');
+  if(!sel) return;
+  var jorn = loadData('jorn');
+  var vac = loadData('vac');
+  var now = new Date();
+  var html = '';
+  if(_infMode === 'month'){
+    // Build last 12 months from now
+    var monthsSet = {};
+    var thisMonth = dateStr(now).substring(0,7);
+    monthsSet[thisMonth] = true;
+    for(var i=1;i<12;i++){
+      var d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+      monthsSet[dateStr(d).substring(0,7)] = true;
+    }
+    jorn.forEach(function(j){ if(j.date) monthsSet[j.date.substring(0,7)] = true; });
+    var months = Object.keys(monthsSet).sort().reverse();
+    if(!_infPeriod || _infPeriod.length!==7) _infPeriod = months[0];
+    var monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    html = months.map(function(m){
+      var [y,mo] = m.split('-');
+      return '<option value="'+m+'"'+(_infPeriod===m?' selected':'')+'>'+monthNames[parseInt(mo)-1]+' '+y+'</option>';
+    }).join('');
+  } else {
+    var yearsSet = {};
+    var thisYear = now.getFullYear();
+    yearsSet[thisYear] = true;
+    yearsSet[thisYear-1] = true;
+    jorn.forEach(function(j){ if(j.date) yearsSet[j.date.substring(0,4)] = true; });
+    vac.forEach(function(v){ if(v.year) yearsSet[v.year] = true; });
+    var years = Object.keys(yearsSet).sort().reverse();
+    if(!_infPeriod || _infPeriod.length!==4) _infPeriod = String(years[0]);
+    html = years.map(function(y){
+      return '<option value="'+y+'"'+(_infPeriod===y?' selected':'')+'>'+y+'</option>';
+    }).join('');
+  }
+  sel.innerHTML = html;
+  sel.onchange = function(){
+    _infPeriod = sel.value;
+    renderAdmInformes();
+  };
+}
+
+function renderAdmInformes(){
+  var box = document.getElementById('admInformesList');
+  if(!box) return;
+  var employees = TEAM.filter(function(u){return u.role==='employee';});
+  var jorn = loadData('jorn');
+  var vac = loadData('vac');
+
+  if(_infMode === 'month'){
+    renderMonthlyReport(box, employees, jorn, vac);
+  } else {
+    renderYearlyReport(box, employees, jorn, vac);
+  }
+}
+
+function renderMonthlyReport(box, employees, jorn, vac){
+  var period = _infPeriod;
+  if(!period){ box.innerHTML='<div class="es"><span class="ei">📅</span><div class="et">Selecciona un mes</div></div>'; return; }
+  var [yr, mo] = period.split('-');
+  var monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  var findes = loadData('findes');
+
+  // Calcular cuántos sábados tiene este mes
+  var totalSabados = countSaturdaysInMonth(parseInt(yr), parseInt(mo)-1);
+
+  // Aggregate per employee
+  var perEmp = {};
+  employees.forEach(function(u){
+    perEmp[u.id] = { user: u, hoursApproved: 0, hoursPending: 0, daysWorked: 0, vacDays: 0, jornCount: 0, sabNoDisp: 0 };
+  });
+  jorn.forEach(function(j){
+    if(!j.date || !j.date.startsWith(period)) return;
+    if(!perEmp[j.userId]) return;
+    if(j.status === 'approved'){
+      perEmp[j.userId].hoursApproved += j.hours||0;
+      perEmp[j.userId].daysWorked += 1;
+    } else if(j.status === 'pending' || j.status === 'open'){
+      perEmp[j.userId].hoursPending += j.hours||0;
+    }
+    perEmp[j.userId].jornCount += 1;
+  });
+  // Vacation days that fall within this month (approved only)
+  vac.forEach(function(v){
+    if(v.status !== 'approved') return;
+    if(!perEmp[v.userId]) return;
+    var d1 = new Date(v.startDate+'T00:00:00');
+    var d2 = new Date(v.endDate+'T00:00:00');
+    while(d1 <= d2){
+      var ds = dateStr(d1);
+      if(ds.startsWith(period)){
+        var dow = d1.getDay();
+        if(dow!==0 && dow!==6) perEmp[v.userId].vacDays += 1;
+      }
+      d1.setDate(d1.getDate()+1);
+    }
+  });
+  // Sábados no disponibles del mes
+  findes.forEach(function(f){
+    if(!f.weekendKey || !f.weekendKey.startsWith(period)) return;
+    if(!perEmp[f.userId]) return;
+    if(f.notAvailable && f.notAvailable.indexOf('sat')>=0) perEmp[f.userId].sabNoDisp += 1;
+  });
+
+  // Totals
+  var totHours = 0, totDays = 0, totVac = 0, totSabNoDisp = 0;
+  Object.values(perEmp).forEach(function(p){
+    totHours += p.hoursApproved;
+    totDays += p.daysWorked;
+    totVac += p.vacDays;
+    totSabNoDisp += p.sabNoDisp;
+  });
+
+  var html = '<div class="rep-totals">'+
+    '<div class="rep-totals-label">'+monthNames[parseInt(mo)-1]+' '+yr+' · Resumen general</div>'+
+    '<div class="rep-totals-grid">'+
+      '<div class="rep-totals-stat"><div class="rep-totals-n">'+fmtHoursShort(totHours)+'</div><div class="rep-totals-l">Horas</div></div>'+
+      '<div class="rep-totals-stat"><div class="rep-totals-n">'+totDays+'</div><div class="rep-totals-l">Jornadas</div></div>'+
+      '<div class="rep-totals-stat"><div class="rep-totals-n">'+totVac+'</div><div class="rep-totals-l">Vacaciones</div></div>'+
+      '<div class="rep-totals-stat"><div class="rep-totals-n">'+totalSabados+'</div><div class="rep-totals-l">Sábados mes</div></div>'+
+    '</div>'+
+  '</div>';
+
+  html += '<div class="section-title">Por empleado<div class="section-line"></div></div>';
+  employees.forEach(function(u){
+    var p = perEmp[u.id];
+    var sabDisp = totalSabados - p.sabNoDisp;
+    html += '<div class="rep-card">'+
+      '<div class="rep-card-h">'+
+        '<div class="rep-card-avatar">'+u.initials+'</div>'+
+        '<div class="rep-card-info">'+
+          '<div class="rep-card-name">'+u.name+'</div>'+
+          '<div class="rep-card-meta">'+p.jornCount+' jornada'+(p.jornCount!==1?'s':'')+' registradas'+(p.hoursPending>0?' · '+fmtHoursShort(p.hoursPending)+' pendientes':'')+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="rep-card-stats">'+
+        '<div class="rep-stat"><div class="rep-stat-n">'+fmtHoursShort(p.hoursApproved)+'</div><div class="rep-stat-l">Horas</div></div>'+
+        '<div class="rep-stat"><div class="rep-stat-n">'+p.daysWorked+'</div><div class="rep-stat-l">Jornadas</div></div>'+
+        '<div class="rep-stat"><div class="rep-stat-n">'+p.vacDays+'</div><div class="rep-stat-l">Vacaciones</div></div>'+
+      '</div>'+
+      '<div style="margin-top:9px;padding-top:9px;border-top:1px solid var(--co);display:flex;justify-content:space-between;align-items:center;">'+
+        '<span style="font-size:11px;color:var(--ts);">📅 Sábados disponibles</span>'+
+        '<span style="font-family:DM Mono,monospace;font-size:13px;font-weight:700;color:'+(sabDisp===totalSabados?'var(--vc)':sabDisp===0?'var(--ro)':'#6a4e10')+';">'+sabDisp+'/'+totalSabados+(p.sabNoDisp>0?' · '+p.sabNoDisp+' no disp.':'')+'</span>'+
+      '</div>'+
+    '</div>';
+  });
+
+  box.innerHTML = html;
+}
+
+// Cuenta cuántos sábados hay en un mes dado
+function countSaturdaysInMonth(year, month){
+  var d = new Date(year, month, 1);
+  var n = 0;
+  while(d.getMonth() === month){
+    if(d.getDay() === 6) n++;
+    d.setDate(d.getDate()+1);
+  }
+  return n;
+}
+
+// Cuenta cuántos sábados hay en un año dado
+function countSaturdaysInYear(year){
+  var n = 0;
+  for(var m=0;m<12;m++) n += countSaturdaysInMonth(year, m);
+  return n;
+}
+
+function renderYearlyReport(box, employees, jorn, vac){
+  var year = parseInt(_infPeriod);
+  if(!year){ box.innerHTML='<div class="es"><span class="ei">🗓️</span><div class="et">Selecciona un año</div></div>'; return; }
+  var yearStr = String(year);
+  var findes = loadData('findes');
+  var totalSabadosAno = countSaturdaysInYear(year);
+
+  var perEmp = {};
+  employees.forEach(function(u){
+    perEmp[u.id] = { user: u, hoursApproved: 0, daysWorked: 0, vacUsed: 0, vacPending: 0, monthlyHours: {}, sabNoDisp: 0 };
+  });
+  jorn.forEach(function(j){
+    if(!j.date || !j.date.startsWith(yearStr)) return;
+    if(!perEmp[j.userId]) return;
+    if(j.status === 'approved'){
+      perEmp[j.userId].hoursApproved += j.hours||0;
+      perEmp[j.userId].daysWorked += 1;
+      var mo = j.date.substring(5,7);
+      perEmp[j.userId].monthlyHours[mo] = (perEmp[j.userId].monthlyHours[mo]||0) + j.hours;
+    }
+  });
+  vac.forEach(function(v){
+    if(v.year !== year) return;
+    if(!perEmp[v.userId]) return;
+    if(v.status === 'approved') perEmp[v.userId].vacUsed += v.workdays;
+    else if(v.status === 'pending') perEmp[v.userId].vacPending += v.workdays;
+  });
+  // Sábados no disponibles del año
+  findes.forEach(function(f){
+    if(!f.weekendKey || !f.weekendKey.startsWith(yearStr)) return;
+    if(!perEmp[f.userId]) return;
+    if(f.notAvailable && f.notAvailable.indexOf('sat')>=0) perEmp[f.userId].sabNoDisp += 1;
+  });
+
+  // Totals
+  var totHours = 0, totDays = 0, totVac = 0, totSabNoDisp = 0;
+  Object.values(perEmp).forEach(function(p){
+    totHours += p.hoursApproved;
+    totDays += p.daysWorked;
+    totVac += p.vacUsed;
+    totSabNoDisp += p.sabNoDisp;
+  });
+
+  var html = '<div class="rep-totals">'+
+    '<div class="rep-totals-label">Año '+year+' · Resumen general del equipo</div>'+
+    '<div class="rep-totals-grid">'+
+      '<div class="rep-totals-stat"><div class="rep-totals-n">'+fmtHoursShort(totHours)+'</div><div class="rep-totals-l">Horas</div></div>'+
+      '<div class="rep-totals-stat"><div class="rep-totals-n">'+totDays+'</div><div class="rep-totals-l">Jornadas</div></div>'+
+      '<div class="rep-totals-stat"><div class="rep-totals-n">'+totVac+'</div><div class="rep-totals-l">Vacaciones</div></div>'+
+      '<div class="rep-totals-stat"><div class="rep-totals-n">'+totalSabadosAno+'</div><div class="rep-totals-l">Sábados año</div></div>'+
+    '</div>'+
+  '</div>';
+
+  html += '<div class="section-title">Por empleado<div class="section-line"></div></div>';
+  var monthNamesShort = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  employees.forEach(function(u){
+    var p = perEmp[u.id];
+    var avgMonth = p.daysWorked > 0 ? p.hoursApproved/12 : 0;
+    var vacLeft = VAC_TOTAL - p.vacUsed - p.vacPending;
+    var sabDisp = totalSabadosAno - p.sabNoDisp;
+    html += '<div class="rep-card">'+
+      '<div class="rep-card-h">'+
+        '<div class="rep-card-avatar">'+u.initials+'</div>'+
+        '<div class="rep-card-info">'+
+          '<div class="rep-card-name">'+u.name+'</div>'+
+          '<div class="rep-card-meta">Media mensual: '+fmtHoursShort(avgMonth)+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="rep-card-stats">'+
+        '<div class="rep-stat"><div class="rep-stat-n">'+fmtHoursShort(p.hoursApproved)+'</div><div class="rep-stat-l">Horas año</div></div>'+
+        '<div class="rep-stat"><div class="rep-stat-n">'+p.daysWorked+'</div><div class="rep-stat-l">Jornadas</div></div>'+
+        '<div class="rep-stat"><div class="rep-stat-n">'+p.vacUsed+'/'+VAC_TOTAL+'</div><div class="rep-stat-l">Vacaciones</div></div>'+
+      '</div>'+
+      '<div style="margin-top:11px;padding-top:11px;border-top:1px solid var(--co);">'+
+        '<div class="rep-detail-row"><span class="rep-detail-lbl">Vacaciones aprobadas</span><span class="rep-detail-val">'+p.vacUsed+' días</span></div>'+
+        (p.vacPending > 0 ? '<div class="rep-detail-row"><span class="rep-detail-lbl">Vacaciones pendientes</span><span class="rep-detail-val">'+p.vacPending+' días</span></div>' : '')+
+        '<div class="rep-detail-row"><span class="rep-detail-lbl">Días disponibles</span><span class="rep-detail-val">'+(vacLeft<0?0:vacLeft)+' días</span></div>'+
+        '<div class="rep-detail-row"><span class="rep-detail-lbl">📅 Sábados disponibles</span><span class="rep-detail-val" style="color:'+(sabDisp===totalSabadosAno?'var(--vc)':sabDisp===0?'var(--ro)':'#6a4e10')+';">'+sabDisp+'/'+totalSabadosAno+(p.sabNoDisp>0?' ('+p.sabNoDisp+' no disp.)':'')+'</span></div>'+
+      '</div>'+
+      // Monthly breakdown
+      '<div style="margin-top:11px;padding-top:11px;border-top:1px solid var(--co);">'+
+        '<div style="font-size:10px;color:var(--ts);text-transform:uppercase;letter-spacing:0.06em;font-weight:600;margin-bottom:7px;">Desglose mensual</div>'+
+        '<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:5px;">'+
+          monthNamesShort.map(function(m,i){
+            var moStr = String(i+1).padStart(2,'0');
+            var h = p.monthlyHours[moStr] || 0;
+            return '<div style="text-align:center;background:'+(h>0?'rgba(74,140,92,0.1)':'var(--cr)')+';border-radius:5px;padding:5px 2px;">'+
+              '<div style="font-size:9px;color:var(--ts);text-transform:uppercase;font-weight:600;">'+m+'</div>'+
+              '<div style="font-family:DM Mono,monospace;font-size:10.5px;font-weight:600;color:'+(h>0?'var(--vm)':'var(--ts)')+';margin-top:2px;">'+(h>0?Math.round(h)+'h':'—')+'</div>'+
+            '</div>';
+          }).join('')+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  });
+
+  box.innerHTML = html;
+}
+
+// Helper: format hours short (e.g. 168h or 168h 30m)
+function fmtHoursShort(h){
+  if(!h && h!==0) return '0h';
+  var hh = Math.floor(h);
+  var mm = Math.round((h-hh)*60);
+  if(mm === 0) return hh+'h';
+  if(mm === 60){ return (hh+1)+'h'; }
+  return hh+'h '+String(mm).padStart(2,'0');
+}
+
+
 document.querySelectorAll('.mo').forEach(function(m){
   m.addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
 });
 
-// Boot: sync from cloud, then show login or restore session
+// Boot: show login immediately, sync in background
 (async function boot(){
-  await syncFromCloud();
-  subscribeRealtime();
-  var savedId = sessionStorage.getItem('bf_rrhh_session');
-  if(savedId){
-    var u = getUserById(savedId);
-    if(u){ _user = u; enterApp(); return; }
-  }
+  // Mostrar el login inmediatamente para que el usuario vea los empleados
   showLogin();
+  // Sincronizar con Supabase en segundo plano
+  try {
+    await syncFromCloud();
+    subscribeRealtime();
+    // Si había sesión guardada, restaurarla ahora
+    var savedId = sessionStorage.getItem('bf_rrhh_session');
+    if(savedId){
+      var u = getUserById(savedId);
+      if(u){ _user = u; enterApp(); }
+    }
+  } catch(e) {
+    console.error('Boot error:', e);
+    toast('⚠ Sin conexión con la nube. Reintenta.');
+  }
 })();
 
 </script>
