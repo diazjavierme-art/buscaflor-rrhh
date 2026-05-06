@@ -462,6 +462,10 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
     </div>
     <div class="msb">
       <div id="editJornHead" style="margin-bottom:14px;font-size:12.5px;color:var(--ts);"></div>
+      <div class="fg">
+        <span class="fl">Fecha</span>
+        <input type="date" class="fi" id="editJornDate">
+      </div>
       <div class="fi-row">
         <div class="fg">
           <span class="fl">Entrada</span>
@@ -482,7 +486,7 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
     </div>
     <div class="msf">
       <button class="btn-secondary" onclick="closeM('mEditJorn')" style="border:1.5px solid var(--co)!important;background:transparent;color:var(--ts);">Cancelar</button>
-      <button class="btn-primary" onclick="saveAdminEditJorn()" style="background:var(--v);color:var(--cr);">💾 Guardar y aprobar</button>
+      <button class="btn-primary" onclick="saveAdminEditJorn()" style="background:var(--v);color:var(--cr);">💾 Guardar</button>
     </div>
   </div>
 </div>
@@ -1610,15 +1614,15 @@ function renderAdmJornRow(j){
       '<div class="row-sub">'+times+' · <span class="status-badge status-'+statusCls+'">'+statusTxt+'</span></div>'+
     '</div>'+
     '<div class="row-right" style="margin-right:6px;"><div class="row-right-main">'+fmtHours(j.hours)+'</div></div>';
+  // Acciones: el admin SIEMPRE puede editar y borrar cualquier jornada
+  html += '<div class="row-actions">';
   if(j.status==='pending'){
-    html += '<div class="row-actions">'+
-      '<button class="row-act ok" onclick="approveJorn(\''+j.id+'\')">✓</button>'+
-      '<button class="row-act ed" onclick="openEditJorn(\''+j.id+'\')">✏️</button>'+
-      '<button class="row-act no" onclick="openRejectJorn(\''+j.id+'\')">✕</button>'+
-    '</div>';
-  } else if(j.status==='approved' || j.status==='rejected'){
-    html += '<div class="row-actions"><button class="row-act ed" onclick="openEditJorn(\''+j.id+'\')">✏️</button></div>';
+    // Pendientes legacy: añadir aprobar y rechazar también
+    html += '<button class="row-act ok" onclick="approveJorn(\''+j.id+'\')">✓</button>';
   }
+  html += '<button class="row-act ed" onclick="openEditJorn(\''+j.id+'\')">✏️</button>';
+  html += '<button class="row-act no" onclick="confirmDeleteJorn(\''+j.id+'\')" title="Borrar jornada">🗑</button>';
+  html += '</div>';
   html += '</div>';
   if(j.status==='rejected' && j.rejectReason){
     html += '<div style="margin:-6px 0 8px 11px;padding:7px 11px;background:rgba(212,132,122,0.08);border-left:3px solid var(--ro);font-size:11px;color:var(--ts);border-radius:0 6px 6px 0;">⚠ '+j.rejectReason+'</div>';
@@ -1638,6 +1642,19 @@ async function approveJorn(id){
   if(ok){ toast('✅ Jornada validada'); refreshAll(); }
 }
 
+async function confirmDeleteJorn(id){
+  var j = CACHE.jorn.find(function(x){return x.id===id;});
+  if(!j) return;
+  var u = getUserById(j.userId) || {name:'?'};
+  if(!confirm('¿Borrar la jornada de '+u.name+' del '+fmtDate(j.date)+' ('+(j.checkIn||'?')+' → '+(j.checkOut||'en curso')+')?\n\nEsta acción no se puede deshacer.')) return;
+  var ok = await deleteOne('jorn', id);
+  if(ok){
+    CACHE.jorn = CACHE.jorn.filter(function(x){return x.id!==id;});
+    toast('🗑 Jornada borrada');
+    refreshAll();
+  }
+}
+
 var _editJornId = null;
 function openEditJorn(id){
   var jorn = loadData('jorn');
@@ -1646,6 +1663,7 @@ function openEditJorn(id){
   _editJornId = id;
   var u = getUserById(j.userId) || {name:'?'};
   document.getElementById('editJornHead').textContent = u.name + ' · ' + fmtDateLong(j.date);
+  document.getElementById('editJornDate').value = j.date || '';
   document.getElementById('editJornIn').value = j.checkIn || '';
   document.getElementById('editJornOut').value = j.checkOut || '';
   document.getElementById('editJornNote').value = j.note || '';
@@ -1668,9 +1686,12 @@ function updateEditJornTotal(){
 async function saveAdminEditJorn(){
   var j = CACHE.jorn.find(function(x){return x.id===_editJornId;});
   if(!j) return;
+  var date = document.getElementById('editJornDate').value;
   var inT = document.getElementById('editJornIn').value;
   var outT = document.getElementById('editJornOut').value;
+  if(!date){ toast('⚠ Selecciona la fecha'); return; }
   if(!inT || !outT){ toast('⚠ Necesitas hora de entrada y salida'); return; }
+  j.date = date;
   j.checkIn = inT;
   j.checkOut = outT;
   j.hours = calcHours(inT, outT);
@@ -1680,7 +1701,7 @@ async function saveAdminEditJorn(){
   var ok = await pushOne('jorn', j);
   if(ok){
     closeM('mEditJorn');
-    toast('✅ Jornada editada y validada');
+    toast('✅ Jornada actualizada');
     refreshAll();
   }
 }
