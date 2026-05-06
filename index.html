@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Buscaflor · Equipo</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 70'><g fill='none' stroke='%231a3a2a' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M 16 18 C 16 14 19 11 22 11 L 22 9 L 26 12 L 30 9 L 34 12 L 38 9 L 38 11 C 41 11 44 14 44 18 L 44 26 C 44 30 40 33 36 33 L 24 33 C 20 33 16 30 16 26 Z'/><path d='M 22 11 L 23 26 C 23 29 25 31 27 31'/><path d='M 38 11 L 37 26 C 37 29 35 31 33 31'/><path d='M 30 33 L 30 62'/><path d='M 30 42 C 24 41 18 43 14 47 C 18 49 24 49 28 46 C 29 45 30 44 30 43'/><path d='M 30 44 C 36 43 42 45 46 49 C 42 51 36 51 32 48 C 31 47 30 46 30 45'/><circle cx='20' cy='56' r='7'/></g></svg>">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=Montserrat:wght@800;900&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -15,7 +15,8 @@
   --az:#3a6a9a;--azc:#5a8abf;
   --sh:0 2px 12px rgba(26,58,42,0.10);
 }
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+html{-webkit-text-size-adjust:100%;}
 body{font-family:'Sora',sans-serif;background:var(--cr);color:var(--tx);min-height:100vh;display:flex;flex-direction:column;max-width:520px;margin:0 auto;}
 
 /* ── HEADER ── */
@@ -581,6 +582,48 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
     <div class="msf">
       <button class="btn-secondary" onclick="closeM('mAddJorn')" style="border:1.5px solid var(--co)!important;background:transparent;color:var(--ts);">Cancelar</button>
       <button class="btn-primary" onclick="saveAddJorn()" style="background:var(--v);color:var(--cr);">💾 Crear jornada</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: EDITAR VACACIONES (ADMIN) ═══ -->
+<div class="mo" id="mEditVac">
+  <div class="ms">
+    <div class="msh">
+      <h3>✏️ Editar vacaciones</h3>
+      <button class="msc" onclick="closeM('mEditVac')">✕</button>
+    </div>
+    <div class="msb">
+      <div id="editVacHead" style="margin-bottom:14px;font-size:12.5px;color:var(--ts);"></div>
+      <div class="fi-row">
+        <div class="fg">
+          <span class="fl">Desde</span>
+          <input type="date" class="fi" id="editVacStart">
+        </div>
+        <div class="fg">
+          <span class="fl">Hasta</span>
+          <input type="date" class="fi" id="editVacEnd">
+        </div>
+      </div>
+      <div class="fg">
+        <span class="fl">Estado</span>
+        <select class="fi" id="editVacStatus">
+          <option value="approved">✓ Aprobada</option>
+          <option value="pending">⏳ Pendiente</option>
+          <option value="rejected">✕ Rechazada</option>
+        </select>
+      </div>
+      <div class="fg">
+        <span class="fl">Motivo / nota (opcional)</span>
+        <textarea class="fi" id="editVacNote" placeholder="Anotación..."></textarea>
+      </div>
+      <div style="background:var(--cr);padding:10px;border-radius:8px;font-size:12px;color:var(--ts);">
+        Días laborables: <strong id="editVacDays" style="color:var(--v);font-family:DM Mono,monospace;">—</strong>
+      </div>
+    </div>
+    <div class="msf">
+      <button class="btn-secondary" onclick="closeM('mEditVac')" style="border:1.5px solid var(--co)!important;background:transparent;color:var(--ts);">Cancelar</button>
+      <button class="btn-primary" onclick="saveEditVac()" style="background:var(--v);color:var(--cr);">💾 Guardar</button>
     </div>
   </div>
 </div>
@@ -1343,11 +1386,15 @@ function renderVacRow(v, ownView){
       '<div class="row-title">'+who+rangeTxt+'</div>'+
       '<div class="row-sub">'+v.workdays+' día'+(v.workdays!==1?'s':'')+' laborable'+(v.workdays!==1?'s':'')+' · <span class="status-badge status-'+statusCls+'">'+statusTxt+'</span></div>'+
     '</div>';
-  if(_user.role==='admin' && v.status==='pending'){
-    html += '<div class="row-actions">'+
-      '<button class="row-act ok" onclick="approveVac(\''+v.id+'\')">✓</button>'+
-      '<button class="row-act no" onclick="openRejectVac(\''+v.id+'\')">✕</button>'+
-    '</div>';
+  if(_user.role==='admin'){
+    html += '<div class="row-actions">';
+    if(v.status==='pending'){
+      html += '<button class="row-act ok" onclick="approveVac(\''+v.id+'\')" title="Aprobar">✓</button>';
+      html += '<button class="row-act no" onclick="openRejectVac(\''+v.id+'\')" title="Rechazar">✕</button>';
+    }
+    html += '<button class="row-act ed" onclick="openEditVac(\''+v.id+'\')" title="Editar">✏️</button>';
+    html += '<button class="row-act no" onclick="confirmDeleteVac(\''+v.id+'\')" title="Borrar">🗑</button>';
+    html += '</div>';
   }
   html += '</div>';
   if(v.note){
@@ -1820,6 +1867,72 @@ async function approveVac(id){
   v.approvedAt = Date.now();
   var ok = await pushOne('vac', v);
   if(ok){ toast('✅ Vacaciones aprobadas'); refreshAll(); }
+}
+
+// ── EDITAR / BORRAR VACACIONES (admin) ──
+var _editVacId = null;
+function openEditVac(id){
+  var v = CACHE.vac.find(function(x){return x.id===id;});
+  if(!v) return;
+  _editVacId = id;
+  var u = getUserById(v.userId) || {name:'?'};
+  document.getElementById('editVacHead').textContent = u.name;
+  document.getElementById('editVacStart').value = v.startDate;
+  document.getElementById('editVacEnd').value = v.endDate;
+  document.getElementById('editVacStatus').value = v.status;
+  document.getElementById('editVacNote').value = v.note || '';
+  updateEditVacDays();
+  document.getElementById('editVacStart').oninput = updateEditVacDays;
+  document.getElementById('editVacEnd').oninput = updateEditVacDays;
+  document.getElementById('mEditVac').classList.add('open');
+}
+function updateEditVacDays(){
+  var s = document.getElementById('editVacStart').value;
+  var e = document.getElementById('editVacEnd').value;
+  if(s && e && s <= e){
+    document.getElementById('editVacDays').textContent = countWorkdays(s, e)+' días';
+  } else {
+    document.getElementById('editVacDays').textContent = '—';
+  }
+}
+async function saveEditVac(){
+  var v = CACHE.vac.find(function(x){return x.id===_editVacId;});
+  if(!v) return;
+  var s = document.getElementById('editVacStart').value;
+  var e = document.getElementById('editVacEnd').value;
+  var status = document.getElementById('editVacStatus').value;
+  var note = document.getElementById('editVacNote').value.trim();
+  if(!s || !e){ toast('⚠ Necesitas las dos fechas'); return; }
+  if(s > e){ toast('⚠ La fecha de inicio debe ser anterior'); return; }
+  var workdays = countWorkdays(s, e);
+  if(workdays === 0){ toast('⚠ El rango solo contiene domingos'); return; }
+  v.startDate = s;
+  v.endDate = e;
+  v.workdays = workdays;
+  v.year = new Date(s+'T00:00:00').getFullYear();
+  v.status = status;
+  v.note = note;
+  if(status === 'approved' && !v.approvedAt) v.approvedAt = Date.now();
+  if(status === 'rejected' && !v.rejectReason) v.rejectReason = note || 'Editado por admin';
+  var ok = await pushOne('vac', v);
+  if(ok){
+    closeM('mEditVac');
+    toast('✅ Vacaciones actualizadas');
+    refreshAll();
+  }
+}
+async function confirmDeleteVac(id){
+  var v = CACHE.vac.find(function(x){return x.id===id;});
+  if(!v) return;
+  var u = getUserById(v.userId) || {name:'?'};
+  var rangeTxt = v.startDate===v.endDate ? fmtDate(v.startDate) : fmtDate(v.startDate)+' → '+fmtDate(v.endDate);
+  if(!confirm('¿Borrar las vacaciones de '+u.name+' ('+rangeTxt+', '+v.workdays+' días)?\n\nEsta acción no se puede deshacer.')) return;
+  var ok = await deleteOne('vac', id);
+  if(ok){
+    CACHE.vac = CACHE.vac.filter(function(x){return x.id!==id;});
+    toast('🗑 Vacaciones borradas');
+    refreshAll();
+  }
 }
 
 // ════════════════════════════════════════════════════════════
