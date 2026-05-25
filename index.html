@@ -433,7 +433,6 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
       <div class="cal-legend">
         <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--vc);"></div>Seleccionado</div>
         <div class="cal-legend-item"><div class="cal-legend-dot" style="background:rgba(201,168,76,0.4);"></div>Ya solicitado</div>
-        <div class="cal-legend-item"><div class="cal-legend-dot" style="background:var(--co);"></div>Sáb/Dom (no cuenta)</div>
       </div>
       <div class="card" id="vacReqSummary" style="display:none;margin-top:11px;background:var(--cr);">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
@@ -618,7 +617,7 @@ textarea.fi{resize:vertical;min-height:60px;font-family:'Sora',sans-serif;}
         <textarea class="fi" id="editVacNote" placeholder="Anotación..."></textarea>
       </div>
       <div style="background:var(--cr);padding:10px;border-radius:8px;font-size:12px;color:var(--ts);">
-        Días laborables: <strong id="editVacDays" style="color:var(--v);font-family:DM Mono,monospace;">—</strong>
+        Días totales: <strong id="editVacDays" style="color:var(--v);font-family:DM Mono,monospace;">—</strong>
       </div>
     </div>
     <div class="msf">
@@ -679,7 +678,7 @@ var TEAM = [
   { id: 'paco',   name: 'Paco',   role: 'employee', pin: '3333', initials: 'PA' },
   { id: 'javier_emp', name: 'Javier', role: 'employee', pin: '4444', initials: 'JA' }
 ];
-var VAC_TOTAL = 22; // días laborables / año
+var VAC_TOTAL = 31; // días naturales / año
 
 // Local cache for instant render. Synced from/to Supabase.
 var CACHE = { jorn: [], vac: [], findes: [] };
@@ -762,14 +761,20 @@ async function syncFromCloud(){
 // Subscribe to realtime updates so changes appear without refresh
 function subscribeRealtime(){
   if(!sb) return;
-  ['jornadas','vacaciones','findes'].forEach(function(table){
-    sb.channel('rt-'+table)
-      .on('postgres_changes', { event: '*', schema: 'public', table: table }, async function(){
-        await syncFromCloud();
-        refreshAll();
-      })
-      .subscribe();
-  });
+  try {
+    ['jornadas','vacaciones','findes'].forEach(function(table){
+      sb.channel('rt-'+table)
+        .on('postgres_changes', { event: '*', schema: 'public', table: table }, async function(){
+          try {
+            await syncFromCloud();
+            refreshAll();
+          } catch(e){ console.warn('Realtime refresh fail:', e); }
+        })
+        .subscribe();
+    });
+  } catch(e){
+    console.warn('Realtime no disponible (probablemente abierto como archivo local):', e);
+  }
 }
 
 // Cache accessor (replaces old localStorage loadData)
@@ -1135,9 +1140,13 @@ function startClock(){
 
 function getTodayJornada(){
   var jorn = loadData('jorn');
-  return jorn.find(function(j){
+  var hoy = jorn.filter(function(j){
     return j.userId === _user.id && j.date === todayStr();
   });
+  if(hoy.length === 0) return undefined;
+  // Si hay varias (duplicados antiguos), priorizar una que esté abierta (sin salida)
+  var abierta = hoy.find(function(j){ return !j.checkOut; });
+  return abierta || hoy[0];
 }
 
 function calcHours(inT, outT){
@@ -1156,39 +1165,68 @@ function fmtHours(h){
   return hh+'h '+String(mm).padStart(2,'0')+'m';
 }
 
+var _clockBusy = false; // bloqueo anti-doble-pulsación
 async function empClock(){
-  var existing = getTodayJornada();
-  var now = new Date();
-  var t = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-  if(!existing){
-    // Clock in
-    var newJ = {
-      id: 'J-'+Date.now(),
-      userId: _user.id,
-      date: todayStr(),
-      checkIn: t,
-      checkOut: null,
-      hours: 0,
-      status: 'open',
-      note: '',
-      createdAt: Date.now()
-    };
-    CACHE.jorn.push(newJ);
-    var ok = await pushOne('jorn', newJ);
-    if(ok) toast('▶ Entrada fichada — '+t);
-  } else if(!existing.checkOut){
-    // Clock out → auto-approved (the employee validates their own hours)
-    existing.checkOut = t;
-    existing.hours = calcHours(existing.checkIn, t);
-    existing.status = 'approved';
-    existing.approvedAt = Date.now();
-    var ok = await pushOne('jorn', existing);
-    if(ok) toast('⏹ Salida fichada — '+fmtHours(existing.hours)+' validadas');
-  } else {
-    toast('⚠ Ya has fichado entrada y salida hoy');
-    return;
+  // Si ya hay un fichaje en curso, ignorar pulsaciones repetidas
+  if(_clockBusy) return;
+  _clockBusy = true;
+  var btn = document.getElementById('clockBtn');
+  if(btn){ btn.disabled = true; btn.style.opacity = '0.5'; btn.style.pointerEvents = 'none'; }
+
+  try {
+    var now = new Date();
+    var t = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+
+    // Releer SIEMPRE el estado más reciente de la nube antes de decidir,
+    // para no crear duplicados si otro dispositivo o pulsación ya fichó.
+    await syncFromCloud();
+    var existing = getTodayJornada();
+
+    if(!existing){
+      // Fichar entrada — comprobar otra vez que no exista ya (defensa extra)
+      var dupe = CACHE.jorn.find(function(j){ return j.userId===_user.id && j.date===todayStr(); });
+      if(dupe){
+        toast('⚠ Ya tienes una jornada hoy');
+      } else {
+        var newJ = {
+          id: 'J-'+_user.id+'-'+todayStr(), // id estable por usuario+día: evita duplicados
+          userId: _user.id,
+          date: todayStr(),
+          checkIn: t,
+          checkOut: null,
+          hours: 0,
+          status: 'open',
+          note: '',
+          createdAt: Date.now()
+        };
+        CACHE.jorn.push(newJ);
+        var ok = await pushOne('jorn', newJ);
+        if(ok) toast('▶ Entrada fichada — '+t);
+      }
+    } else if(!existing.checkOut){
+      // Fichar salida → auto-aprobada
+      existing.checkOut = t;
+      existing.hours = calcHours(existing.checkIn, t);
+      existing.status = 'approved';
+      existing.approvedAt = Date.now();
+      var ok = await pushOne('jorn', existing);
+      if(ok) toast('⏹ Salida fichada — '+fmtHours(existing.hours)+' validadas');
+    } else {
+      toast('⚠ Ya has fichado entrada y salida hoy');
+    }
+    renderEmpHome();
+  } catch(e){
+    console.error('Error al fichar:', e);
+    toast('⚠ Error al fichar, inténtalo de nuevo');
+  } finally {
+    // Liberar el bloqueo con un pequeño retardo para evitar tap-tap instantáneo
+    setTimeout(function(){
+      _clockBusy = false;
+      var b = document.getElementById('clockBtn');
+      if(b){ b.disabled = false; b.style.opacity = ''; b.style.pointerEvents = ''; }
+      renderEmpHome();
+    }, 600);
   }
-  renderEmpHome();
 }
 
 function renderEmpHome(){
@@ -1217,6 +1255,8 @@ function renderEmpHome(){
       '<div class="clock-status-val">'+today.checkIn+' → '+today.checkOut+' · '+fmtHours(today.hours)+'</div>';
     btn.style.display = 'none';
   }
+  // Si hay un fichaje en curso, mantener el botón bloqueado visualmente
+  if(_clockBusy && btn){ btn.disabled = true; btn.style.opacity = '0.5'; btn.style.pointerEvents = 'none'; }
   // Week summary
   renderEmpWeekSummary();
   // Vac summary
@@ -1242,10 +1282,10 @@ function renderEmpWeekSummary(){
     var j = jorn.find(function(x){return x.date===ds;});
     var dow = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'][i];
     var dn = d.getDate();
-    var weekend = i>=5;
+    var weekend = i===6; // solo domingo (sábado es laborable)
     var iconCls = j ? (j.status==='approved'?'green':j.status==='rejected'?'red':'gold') : (weekend?'':'gray');
     var iconLabel = j ? (j.status==='approved'?'✓':j.status==='rejected'?'✕':'⏳') : (weekend?'·':'—');
-    var hoursTxt = j ? fmtHours(j.hours) : (weekend?'fin de semana':'sin fichar');
+    var hoursTxt = j ? fmtHours(j.hours) : (weekend?'domingo':'sin fichar');
     var subtxt = j ? (j.status==='pending'?'Pendiente':j.status==='open'?'En curso':j.status==='approved'?'Cerrada':'Revisada') : '';
     if(j && j.status==='approved') totalH += j.hours;
     html += '<div class="row" style="border-radius:0;box-shadow:none;border-bottom:1px solid var(--co);margin-bottom:0;">'+
@@ -1347,7 +1387,7 @@ function renderEmpVacas(){
       '<div class="vac-stat"><div class="vac-stat-n">'+(left<0?0:left)+'</div><div class="vac-stat-l">Restan</div></div>'+
     '</div>'+
     '<div class="vac-bar"><div class="vac-bar-fill" style="width:'+Math.min(100,((used+pending)/VAC_TOTAL)*100)+'%;"></div></div>'+
-    '<div style="font-size:10.5px;color:var(--ts);margin-top:7px;text-align:center;">de '+VAC_TOTAL+' días laborables disponibles</div>'+
+    '<div style="font-size:10.5px;color:var(--ts);margin-top:7px;text-align:center;">de '+VAC_TOTAL+' días naturales disponibles</div>'+
   '</div>';
   if(!vac.length){
     box.innerHTML = summary + '<div class="es"><span class="ei">🏖️</span><div class="et">Sin solicitudes</div><div class="ed">Pulsa "Solicitar vacaciones" para empezar.</div></div>';
@@ -1384,7 +1424,7 @@ function renderVacRow(v, ownView){
     '<div class="row-icon '+iconCls+'">'+icon+'</div>'+
     '<div class="row-body">'+
       '<div class="row-title">'+who+rangeTxt+'</div>'+
-      '<div class="row-sub">'+v.workdays+' día'+(v.workdays!==1?'s':'')+' laborable'+(v.workdays!==1?'s':'')+' · <span class="status-badge status-'+statusCls+'">'+statusTxt+'</span></div>'+
+      '<div class="row-sub">'+v.workdays+' día'+(v.workdays!==1?'s':'')+' natural'+(v.workdays!==1?'s':'')+' · <span class="status-badge status-'+statusCls+'">'+statusTxt+'</span></div>'+
     '</div>';
   if(_user.role==='admin'){
     html += '<div class="row-actions">';
@@ -1455,7 +1495,7 @@ function renderCalendar(){
     var ds = y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
     var dt = new Date(ds+'T00:00:00');
     var dow = (dt.getDay()+6)%7;
-    var weekend = dow>=5; // sábado y domingo
+    var weekend = false; // Ahora todos los días cuentan en vacaciones
     var past = ds < today;
     var occupied = occupiedDates[ds];
     var classes = ['cal-day'];
@@ -1496,12 +1536,12 @@ function clearVacSelection(){
 }
 
 function countWorkdays(start, end){
+  // Días naturales: todos cuentan (incluidos sábados y domingos)
   var d1 = new Date(start+'T00:00:00');
   var d2 = new Date(end+'T00:00:00');
   var n = 0;
   while(d1<=d2){
-    var dow = d1.getDay();
-    if(dow!==0 && dow!==6) n++; // ni sábado ni domingo cuentan en vacaciones
+    n++;
     d1.setDate(d1.getDate()+1);
   }
   return n;
@@ -1522,9 +1562,8 @@ function updateVacReqSummary(){
   var overBudget = wouldUse > VAC_TOTAL;
   var rangeTxt = _vacStart===end ? fmtDateLong(_vacStart) : fmtDate(_vacStart)+' al '+fmtDate(end);
   body.innerHTML = '<div style="font-size:13px;font-weight:600;color:var(--v);margin-bottom:5px;">📅 '+rangeTxt+'</div>'+
-    '<div style="display:flex;gap:14px;font-size:11.5px;color:var(--ts);">'+
-      '<span><strong style="color:var(--v);font-family:DM Mono,monospace;font-size:14px;">'+workdays+'</strong> días laborables</span>'+
-      '<span><strong style="color:var(--ts);font-family:DM Mono,monospace;font-size:14px;">'+totalDays+'</strong> días naturales</span>'+
+    '<div style="font-size:11.5px;color:var(--ts);">'+
+      '<strong style="color:var(--v);font-family:DM Mono,monospace;font-size:18px;">'+workdays+'</strong> día'+(workdays!==1?'s':'')+' natural'+(workdays!==1?'es':'')+
     '</div>'+
     (overBudget ? '<div style="margin-top:8px;padding:7px 10px;background:rgba(212,132,122,0.12);border-radius:6px;font-size:11px;color:var(--ro);">⚠ Excederías tu cupo anual de '+VAC_TOTAL+' días ('+wouldUse+' usarías en total)</div>' : '');
   box.style.display='block';
@@ -1534,7 +1573,7 @@ async function submitVacRequest(){
   if(!_vacStart){ toast('⚠ Selecciona al menos un día'); return; }
   var end = _vacEnd || _vacStart;
   var workdays = countWorkdays(_vacStart, end);
-  if(workdays===0){ toast('⚠ El rango solo contiene fines de semana'); return; }
+  if(workdays===0){ toast('⚠ Selecciona al menos un día'); return; }
   var note = document.getElementById('vacReqNote').value.trim();
   var newV = {
     id: 'V-'+Date.now(),
@@ -1905,7 +1944,7 @@ async function saveEditVac(){
   if(!s || !e){ toast('⚠ Necesitas las dos fechas'); return; }
   if(s > e){ toast('⚠ La fecha de inicio debe ser anterior'); return; }
   var workdays = countWorkdays(s, e);
-  if(workdays === 0){ toast('⚠ El rango solo contiene domingos'); return; }
+  if(workdays === 0){ toast('⚠ Selecciona al menos un día'); return; }
   v.startDate = s;
   v.endDate = e;
   v.workdays = workdays;
@@ -2223,8 +2262,7 @@ function renderMonthlyReport(box, employees, jorn, vac){
     while(d1 <= d2){
       var ds = dateStr(d1);
       if(ds.startsWith(period)){
-        var dow = d1.getDay();
-        if(dow!==0 && dow!==6) perEmp[v.userId].vacDays += 1;
+        perEmp[v.userId].vacDays += 1;
       }
       d1.setDate(d1.getDate()+1);
     }
@@ -2421,17 +2459,24 @@ document.querySelectorAll('.mo').forEach(function(m){
   // Sincronizar con Supabase en segundo plano
   try {
     await syncFromCloud();
+  } catch(e) {
+    console.warn('Sync fail:', e);
+    toast('⚠ Sin conexión con la nube. Reintenta.');
+  }
+  // Realtime es opcional — si falla, la app funciona igual con refresh manual
+  try {
     subscribeRealtime();
-    // Si había sesión guardada, restaurarla ahora
+  } catch(e){
+    console.warn('Realtime fail (no es crítico):', e);
+  }
+  // Si había sesión guardada, restaurarla ahora
+  try {
     var savedId = sessionStorage.getItem('bf_rrhh_session');
     if(savedId){
       var u = getUserById(savedId);
       if(u){ _user = u; enterApp(); }
     }
-  } catch(e) {
-    console.error('Boot error:', e);
-    toast('⚠ Sin conexión con la nube. Reintenta.');
-  }
+  } catch(e){ console.warn('Session restore fail:', e); }
 })();
 
 </script>
